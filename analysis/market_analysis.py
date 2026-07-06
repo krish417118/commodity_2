@@ -65,6 +65,9 @@ assets = {
     "EURUSD": "EURUSD_Close"
 }
 
+# Convert all asset prices to numeric once
+for column in assets.values():
+    df[column] = pd.to_numeric(df[column], errors="coerce")
 
 # ==========================================
 # 1. DAILY RETURNS
@@ -274,8 +277,19 @@ cpi_df = cpi_df.dropna().sort_values("Date")
 
 # DXY - now collected automatically by market_data.py (Day 1 fix,
 # replaces the old manual data/DXY.csv read)
-dxy_df = pd.read_csv("data/cleaned/clean_dxy.csv", parse_dates=["Date"])
-dxy_df = dxy_df[["Date", "Close"]].rename(columns={"Close": "DXY_Close"})
+dxy_df = pd.read_csv(
+    "data/cleaned/clean_dxy.csv",
+    parse_dates=["Date"]
+)
+
+dxy_df = dxy_df[["Date", "Close"]].rename(
+    columns={"Close": "DXY_Close"}
+)
+
+dxy_df["DXY_Close"] = pd.to_numeric(
+    dxy_df["DXY_Close"],
+    errors="coerce"
+)
 dxy_df = dxy_df.dropna().sort_values("Date")
 
 # -------------------------------
@@ -315,15 +329,34 @@ for asset, column in assets.items():
 # Macro factors
 returns_matrix["US10Y_Yield"] = macro_df["US10Y_Yield"]           # level, not a return
 returns_matrix["CPI_Inflation"] = macro_df["CPI"].pct_change()     # month-over-month % change
-returns_matrix["DXY_Index"] = macro_df["DXY_Close"].pct_change()   # daily % change
+returns_matrix["DXY_Index"] = (                                    # daily % change
+    pd.to_numeric(
+        macro_df["DXY_Close"],
+        errors="coerce"
+    ).pct_change(fill_method=None)
+)  
 
 # -------------------------------
-#  Correlation Matrix
+# Correlation Matrix (Last 30 Trading Days)
 # -------------------------------
-correlation = returns_matrix.drop(columns=["Date"]).corr()
-correlation.to_csv("analysis/outputs/macro_correlation_matrix.csv")
 
-print("Macro correlation matrix created")
+# Keep only the latest 30 trading days
+returns_last30 = returns_matrix.tail(30)
+
+# Remove Date column and rows with missing values
+correlation = (
+    returns_last30
+    .drop(columns=["Date"])
+    .dropna()
+    .corr()
+)
+
+correlation.to_csv(
+    "analysis/outputs/correlation_30D_matrix.csv",
+    index=True
+)
+
+print("30-day macro correlation matrix created")
 
 # Full return + macro series also saved for Power BI / further analysis.
 # (Day 1 fix: this used to be computed a second time from scratch in a
