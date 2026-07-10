@@ -4,12 +4,12 @@ I built this project to track trades for Gold, Bitcoin, and Forex using hard dat
 
 Rather than staring at charts all day, this setup automatically downloads daily prices, runs the math, and outputs clear "BUY" or "SELL" signals into a clean Power BI dashboard. 
 
-## 🛠️ What I Used
+##  What I Used
 * **Python** (to download the data and run the strategy)
 * **SQLite** (to store the data locally on my machine)
 * **Power BI** (to visualize the trades and make it look good)
 
-## 🧠 How the Strategy Works
+##  How the Strategy Works
 The code treats different assets differently:
 * **Gold:** Buys the dip when the overall trend is going up.
 * **Bitcoin:** Looks for fast, aggressive momentum breakouts.
