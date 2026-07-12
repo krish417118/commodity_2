@@ -1,19 +1,23 @@
-# Commodity & Macro Trading Dashboard 
+## Commodity & Macro Trading Dashboard
 
-I built this project to track trades for Gold, Bitcoin, and Forex using hard data instead of gut feelings. 
+This project is a market intelligence dashboard that combines technical price analysis with macroeconomic indicators to monitor Gold, Bitcoin, and EUR/USD. The goal is to organize market data into a single workflow that helps evaluate potential trading opportunities rather than relying solely on price charts.
 
-Rather than staring at charts all day, this setup automatically downloads daily prices, runs the math, and outputs clear "BUY" or "SELL" signals into a clean Power BI dashboard. 
+The pipeline automatically collects daily market data, stores it in a local SQLite database, calculates technical and macro indicators, and presents the results through an interactive Power BI dashboard.
 
-##  What I Used
-* **Python** (to download the data and run the strategy)
-* **SQLite** (to store the data locally on my machine)
-* **Power BI** (to visualize the trades and make it look good)
+# Tech Stack
+Python – Data collection, analysis, and signal generation
+SQLite – Local database for storing historical market data
+Power BI – Interactive dashboard for visualization and analysis
 
-##  How the Strategy Works
-The code treats different assets differently:
-* **Gold:** Buys the dip when the overall trend is going up.
-* **Bitcoin:** Looks for fast, aggressive momentum breakouts.
-* **EUR/USD (Forex):** Tracks 10-day highs and lows to catch big channel moves.
+# Strategy Overview
+Each asset follows a different rule-based approach:
 
-**The Safety Net (Macro Filters):** The code doesn't just look at the price. It also checks the broader economy, like the US Dollar Index and Treasury Yields. If a chart says "BUY" but the economy says the opposite, the bot cancels the trade. This prevents losing money on false breakouts.
+Gold: Looks for pullbacks within an established uptrend.
+Bitcoin: Monitors momentum breakouts to identify periods of strong price acceleration.
+EUR/USD: Uses 10-day channel breakouts to highlight potential trend continuation.
 
+# Macro Confirmation
+Technical signals are evaluated alongside broader macroeconomic conditions, including the US Dollar Index (DXY) and US Treasury Yields. These indicators provide additional market context and help filter out lower-conviction setups when technical and macro trends are not aligned.
+
+# Purpose
+The dashboard is not designed to predict markets with certainty or provide guaranteed “buy/sell” calls. Instead, it delivers structured signals and contextual insights that help traders make informed decisions. By combining asset‑specific strategies with macroeconomic filters, the system emphasizes discipline, consistency, and risk awareness.
