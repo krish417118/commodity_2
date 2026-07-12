@@ -1,4 +1,4 @@
-# Commodity & Macro Trading Dashboard 📈
+# Commodity & Macro Trading Dashboard 
 
 I built this project to track trades for Gold, Bitcoin, and Forex using hard data instead of gut feelings. 
 
