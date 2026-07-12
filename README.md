@@ -22,8 +22,8 @@ Each asset follows a different rule-based approach:
 
 ## Macro Confirmation
 
-Technical signals are evaluated alongside broader macroeconomic conditions, including the US Dollar Index (DXY) and **US Treasury Yields**. These indicators provide additional market context and help filter out lower-conviction setups when technical and macro trends are not aligned.
+Technical signals are evaluated alongside broader macroeconomic conditions, including the **US Dollar Index (DXY)** and **US Treasury Yields**. These indicators provide additional market context and help filter out lower-conviction setups when technical and macro trends are not aligned.
 
 ## Purpose
-The dashboard is not designed to predict markets with certainty or provide guaranteed “buy/sell” calls. Instead, it delivers structured signals and contextual insights that help traders make informed decisions. By combining asset‑specific strategies with macroeconomic filters, the system emphasizes discipline, consistency, and risk awareness.
+The dashboard is not designed to predict markets with certainty or provide guaranteed “buy/sell” calls. Instead, it delivers structured signals and data-backed insights that help traders make informed decisions. By combining asset‑specific strategies with macroeconomic filters, the system emphasizes discipline, consistency, and risk awareness.
 
