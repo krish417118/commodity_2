@@ -81,23 +81,35 @@ def run_pipeline():
 
     # 1. Process Core Assets (raw_prices)
     for asset_name, ticker in CORE_ASSETS.items():
-        print(f"Processing Core Asset: {asset_name} ({ticker})")
-        
-        last_date = get_latest_date(conn, "raw_prices", "asset", asset_name)
-        df = fetch_incremental_data(ticker, start_date=last_date)
-        
-        if not df.empty:
-            # Clean and reshape for the raw_prices table (date, asset, close)
-            df = df.rename(columns={"Date": "date", "Close": "close"})
-            df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
-            df["asset"] = asset_name
+            print(f"Processing Core Asset: {asset_name} ({ticker})")
             
-            # Defensive cleaning: forward fill, drop NaNs, select only needed columns
-            clean_df = df[["date", "asset", "close"]].ffill().dropna()
+            last_date = get_latest_date(conn, "raw_prices", "asset", asset_name)
+            df = fetch_incremental_data(ticker, start_date=last_date)
             
-            # Upsert
-            rows_added = upsert_dataframe(conn, "raw_prices", clean_df)
-            print(f"  -> Upserted {rows_added} rows into raw_prices.\n")
+            if not df.empty:
+                # Flatten columns if yfinance returns a MultiIndex
+                if isinstance(df.columns, pd.MultiIndex):
+                    df.columns = df.columns.get_level_values(0)
+
+                if 'Date' not in df.columns and df.index.name == 'Date':
+                    df = df.reset_index()
+                
+                df = df.rename(columns={"Date": "date", "Close": "close"})
+                df["date"] = pd.to_datetime(df["date"]).dt.strftime("%Y-%m-%d")
+                df["asset"] = asset_name
+                
+                # --- EXPLICIT DATE BLACKLIST ---
+                # Completely discard the corrupted date for all assets before processing
+                df = df[df["date"] != "2026-07-06"]
+                
+                # Force whatever remains to be purely numeric
+                df["close"] = pd.to_numeric(df["close"], errors="coerce")
+                
+                # Final clean and drop missing records
+                clean_df = df[["date", "asset", "close"]].dropna()
+                
+                rows_added = upsert_dataframe(conn, "raw_prices", clean_df)
+                print(f"  -> Upserted {rows_added} rows into raw_prices.\n")
 
     # 2. Process Macro Factors (macro_data)
     for series_name, ticker in MACRO_ASSETS.items():
