@@ -104,7 +104,12 @@ fred = Fred(api_key=FRED_API_KEY)
 
 def fetch_and_upsert_fred(series_id, series_name):
     try:
-        s = fred.get_series(series_id).reset_index()
+        # Dynamically calculate the date exactly 2 years ago today
+        start_date = (pd.Timestamp.today() - pd.DateOffset(years=2)).strftime('%Y-%m-%d')
+        
+        # Pass the start_date directly into the FRED API request
+        s = fred.get_series(series_id, observation_start=start_date).reset_index()
+        
         s.columns = ["date", "value"]
         s["date"] = s["date"].dt.strftime("%Y-%m-%d")
         s["series"] = series_name
@@ -112,7 +117,7 @@ def fetch_and_upsert_fred(series_id, series_name):
         s = s.dropna()
         upsert_dataframe(conn, "macro_data", s)
     except Exception as e:
-        print(f"  -> WARNING: Failed to fetch {series_name}: {e}")
+        print(f"  -> WARNING: Failed to fetch {series_name} from FRED: {e}")
 
 fetch_and_upsert_fred("DGS10", "US10Y_Yield")
 fetch_and_upsert_fred("CPIAUCSL", "CPI")
