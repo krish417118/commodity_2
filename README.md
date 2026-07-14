@@ -1,6 +1,6 @@
 
 
-# Commodity & Macro Trading Dashboard
+# Commodity Insights Dashboard
 
 This project is a market intelligence dashboard that combines technical price analysis with macroeconomic indicators to monitor Gold, Bitcoin, and EUR/USD. The goal is to organize market data into a single workflow that helps evaluate potential trading opportunities rather than relying solely on price charts.
 
